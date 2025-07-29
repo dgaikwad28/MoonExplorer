@@ -29,8 +29,12 @@ httptools==0.6.4
     # via uvicorn
 idna==3.10
     # via anyio
+itsdangerous==2.2.0
+    # via -r requirements/requirements.in
 packaging==25.0
     # via gunicorn
+psycopg2-binary==2.9.10
+    # via -r requirements/requirements.in
 pydantic==2.11.7
     # via
     #   -r requirements/requirements.in

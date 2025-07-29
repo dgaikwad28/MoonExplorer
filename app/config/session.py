@@ -3,8 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 from app.config.settings import SETTINGS
 
-connect_args = {"check_same_thread": SETTINGS.db_multi_thread}
-engine = create_engine(SETTINGS.db_url, connect_args=connect_args)
+engine = create_engine(SETTINGS.db_url)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

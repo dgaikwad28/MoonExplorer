@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 
 from app.config.session import Base
 
@@ -12,10 +12,15 @@ class RobotState(Base):
     y = Column(Integer, nullable=False)
     direction = Column(String, nullable=False)
 
+    timestamp = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+
 
 class CommandHistory(Base):
     __tablename__ = "command_history"
     id = Column(Integer, primary_key=True, index=True)
     command = Column(String, nullable=False)
-    timestamp = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     result = Column(String, nullable=False)
+
+    executed = Column(Boolean, nullable=False)
+
+    timestamp = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
