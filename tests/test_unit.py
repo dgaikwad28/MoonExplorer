@@ -122,11 +122,11 @@ class TestStaticMethods:
         assert CommandHistory.is_valid_command('')  # Empty string is technically valid (no invalid chars)
 
     def test_is_valid_command_invalid(self):
-        with pytest.raises(IncorrectConfiguration):
+        with pytest.raises(InvalidData):
             CommandHistory.is_valid_command('X')
-        with pytest.raises(IncorrectConfiguration):
+        with pytest.raises(InvalidData):
             CommandHistory.is_valid_command('FZ')
-        with pytest.raises(IncorrectConfiguration):
+        with pytest.raises(InvalidData):
             CommandHistory.is_valid_command('123')
-        with pytest.raises(IncorrectConfiguration):
+        with pytest.raises(InvalidData):
             CommandHistory.is_valid_command('f')  # Lowercase is not valid

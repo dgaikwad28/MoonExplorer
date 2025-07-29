@@ -4,6 +4,7 @@ from logging import getLogger
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
+from app.authentication import get_api_key
 from app.config.session import get_db
 from app.models.base_models import RobotStateResponse, CommandRequest, RobotStateFailedResponse
 from app.models.db_models import CommandHistory, RobotState, Results
@@ -19,13 +20,13 @@ api_logger = getLogger('api')
     status_code=status.HTTP_200_OK,
     response_model=RobotStateResponse
 )
-def get_state(db: Session = Depends(get_db)) -> RobotStateResponse:
+def get_state(db: Session = Depends(get_db), api_key: str = Depends(get_api_key)) -> RobotStateResponse:
     state = get_or_create_robot_state(db)
     return RobotStateResponse(x=state.x, y=state.y, direction=state.direction)
 
 
 @api_router.post("/command", response_model=RobotStateResponse)
-def execute_command(req: CommandRequest, db: Session = Depends(get_db)):
+def execute_command(req: CommandRequest, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     try:
         present_state = get_or_create_robot_state(db)
         # Create a copy of the state to avoid mutating the original

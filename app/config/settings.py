@@ -27,6 +27,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=os.path.join(ROOT_DIR, "env", ".env"), extra='ignore')
 
+    api_key: str
+    api_key_name: str
 
 SETTINGS = Settings()
 

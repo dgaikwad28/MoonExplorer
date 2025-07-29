@@ -3,7 +3,7 @@ from logging import getLogger
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, func
 from sqlalchemy.orm import relationship
 
-from app.config.exception_handlers import InvalidData, IncorrectConfiguration
+from app.config.exception_handlers import InvalidData
 from app.config.session import Base
 
 api_logger = getLogger('api')
@@ -66,5 +66,6 @@ class CommandHistory(Base):
     @staticmethod
     def is_valid_command(command: str) -> bool:
         if not all(c in 'FBLR' for c in command):
-            raise IncorrectConfiguration()
+            api_logger.info(f'Invalid command: {command}')
+            raise InvalidData()
         return True

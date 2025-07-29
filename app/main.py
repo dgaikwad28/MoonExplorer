@@ -1,11 +1,10 @@
 from logging.config import dictConfig
 
 from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from app.config.exception_handlers import InvalidData, invalid_data, incorrect_configuration, handler_uncaught_exception
+from app.config.exception_handlers import InvalidData, invalid_data
 from app.config.logging import logging_config
 from app.config.session import Base, engine
 from app.config.settings import SETTINGS
@@ -30,7 +29,6 @@ def init_app() -> FastAPI:
     _app = FastAPI(debug=SETTINGS.debug)
     # exceptions
     _app.add_exception_handler(InvalidData, invalid_data)
-    _app.add_exception_handler(RequestValidationError, incorrect_configuration)
 
     # middlewares
     _app.add_middleware(SessionMiddleware, https_only=SETTINGS.https_only, secret_key=SETTINGS.secret_key,
