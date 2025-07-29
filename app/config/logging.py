@@ -6,7 +6,7 @@ from app.config.settings import ROOT_DIR
 
 
 def logging_config() -> Optional[json]:
-    file_path = os.path.join(ROOT_DIR, 'logging', 'default_logging.json')
+    file_path = os.path.join(ROOT_DIR, 'default_logging.json')
     if not file_path:
         print('Logging Config file path do not exit')
         return None

@@ -1,7 +1,12 @@
+from logging import getLogger
+
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, func
 from sqlalchemy.orm import relationship
 
+from app.config.exception_handlers import InvalidData
 from app.config.session import Base
+
+api_logger = getLogger('api')
 
 
 class Directions:
@@ -59,5 +64,8 @@ class CommandHistory(Base):
         return result in Results.ALL
 
     @staticmethod
-    def is_valid_command(command):
-        return all(c in 'FBLR' for c in command)
+    def is_valid_command(command: str) -> bool:
+        if not all(c in 'FBLR' for c in command):
+            api_logger.info(f'Invalid command: {command}')
+            raise InvalidData()
+        return True

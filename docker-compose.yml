@@ -2,11 +2,10 @@ version: '3.9'
 
 services:
   app:
+    container_name: moon_explorer
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
     volumes:
       - .:/app/
       - ./env:/app/env
@@ -15,6 +14,9 @@ services:
       DB_URL: postgresql://moon_explorer_user:Password!@postgres:5432/moon_explorer_db
     depends_on:
       - postgres
+    networks:
+      - backend
+      - default
 
   postgres:
     container_name: postgres_db
@@ -35,6 +37,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - backend
+      - default
 
   nginx:
     image: nginx:alpine
@@ -48,7 +53,7 @@ services:
       - ./nginx/sites-available/default-ssl:/etc/nginx/sites-enabled/default-ssl:ro
       - ./nginx/snippets:/etc/nginx/snippets:ro
     depends_on:
-      - lunchlog
+      - app
     expose:
       - 7000
     networks:
@@ -57,3 +62,6 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  backend:

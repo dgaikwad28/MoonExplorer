@@ -19,9 +19,9 @@ class RobotStateFailedResponse(BaseModel):
 
 
 class CommandRequest(BaseModel):
-    commands: str
+    command: str
 
-    @field_validator('commands')
-    def commands_must_be_valid(cls, commands: str) -> str:
-        CommandHistory.is_valid_command(commands)
-        return commands
+    @field_validator('command')
+    def command_must_be_valid(cls, command: str) -> str:
+        CommandHistory.is_valid_command(command)
+        return command

@@ -45,7 +45,7 @@ def check_obstacle(state: RobotState) -> bool:
 def move_robot(state: RobotState, cmd: str) -> (RobotState, bool):
     """
     Move or rotate the robot based on its current state and a command.
-    Commands:
+    command:
         F: Move forward
         B: Move backward
         L: Rotate left
