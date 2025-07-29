@@ -44,7 +44,7 @@ def execute_command(req: CommandRequest, db: Session = Depends(get_db), api_key:
                 command_history.result = Results.OBSTACLE
                 db.commit()
                 return RobotStateResponse(x=present_state_copy.x, y=present_state_copy.y,
-                                          direction=present_state_copy.direction)
+                                          direction=present_state_copy.direction, result=Results.OBSTACLE)
             new_state_obj = RobotState(
                 x=updated_present_state.x,
                 y=updated_present_state.y,
@@ -62,6 +62,9 @@ def execute_command(req: CommandRequest, db: Session = Depends(get_db), api_key:
             db.refresh(new_state_obj)
             return RobotStateResponse(x=new_state_obj.x, y=new_state_obj.y, direction=new_state_obj.direction,
                                       result=Results.OK)
+        command_history.executed = False
+        command_history.result = Results.OK
+        db.commit()
     except Exception as exc:
         api_logger.exception(f'Error executing command: {exc}')
         db.rollback()
