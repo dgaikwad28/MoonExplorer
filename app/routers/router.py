@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.config.session import get_db
-from app.models.base_models import RobotStateResponse, CommandRequest
-from app.models.db_models import CommandHistory, RobotState, Directions
-from app.service import get_or_create_robot_state
+from app.models.base_models import RobotStateResponse, CommandRequest, RobotStateFailedResponse
+from app.models.db_models import CommandHistory, RobotState, Results
+from app.service import get_or_create_robot_state, move_robot
 
 api_router = APIRouter(prefix="/api", tags=["api"])
 api_logger = getLogger('api')
@@ -38,7 +38,12 @@ def execute_commands(req: CommandRequest, db: Session = Depends(get_db)):
         new_state_obj = None
         # Process commands and update state, saving each state after a command
         for cmd in req.commands:
-            updated_present_state = move_robot(present_state_copy, cmd)
+            updated_present_state, error_occurred = move_robot(present_state_copy, cmd)
+            if error_occurred:
+                command_history.result = Results.OBSTACLE
+                db.commit()
+                return RobotStateResponse(x=present_state_copy.x, y=present_state_copy.y,
+                                          direction=present_state_copy.direction)
             new_state_obj = RobotState(
                 x=updated_present_state.x,
                 y=updated_present_state.y,
@@ -49,44 +54,19 @@ def execute_commands(req: CommandRequest, db: Session = Depends(get_db)):
 
         # Mark command_history as executed after successful commit
         command_history.executed = True
+        command_history.result = Results.OK
         db.commit()
 
         if new_state_obj:
             db.refresh(new_state_obj)
-            return RobotStateResponse(x=new_state_obj.x, y=new_state_obj.y, direction=new_state_obj.direction)
-        else:
-            return RobotStateResponse(x=present_state_copy.x, y=present_state_copy.y, direction=present_state_copy.direction)
+            return RobotStateResponse(x=new_state_obj.x, y=new_state_obj.y, direction=new_state_obj.direction,
+                                      result=Results.OK)
     except Exception as exc:
         api_logger.exception(f'Error executing commands: {exc}')
         db.rollback()
-        raise exc
+
     finally:
         db.close()
+        api_logger.debug('Database session closed.')
 
-
-def move_robot(state, cmd):
-    """
-    Move or rotate the robot based on its current state and a command.
-    Commands:
-        F: Move forward
-        B: Move backward
-        L: Rotate left
-        R: Rotate right
-    """
-    direction_order = ['north', 'east', 'south', 'west']
-    direction_delta = {Directions.NORTH: (0, 1), Directions.EAST: (1, 0), Directions.SOUTH: (0, -1),
-                       Directions.WEST: (-1, 0)}
-    if cmd == 'L':
-        state.direction = direction_order[(direction_order.index(state.direction) - 1) % 4]
-    elif cmd == 'R':
-        state.direction = direction_order[(direction_order.index(state.direction) + 1) % 4]
-    elif cmd == 'F':
-        dx, dy = direction_delta[state.direction]
-        state.x += dx
-        state.y += dy
-    elif cmd == 'B':
-        dx, dy = direction_delta[state.direction]
-        state.x -= dx
-        state.y -= dy
-
-    return state
+    return RobotStateFailedResponse(result=Results.FAILED)

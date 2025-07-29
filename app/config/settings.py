@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     start_y: int = 2
     start_direction: str = "west"
 
+    obstacles: set[tuple[int, int]] = {(1, 4), (3, 5), (7, 4)}
+
     model_config = SettingsConfigDict(env_file=os.path.join(ROOT_DIR, "env", ".env"), extra='ignore')
 
 

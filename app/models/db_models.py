@@ -9,7 +9,19 @@ class Directions:
     SOUTH = 'south'
     EAST = 'east'
     WEST = 'west'
-    ALL = {NORTH, SOUTH, EAST, WEST}
+
+    all = {NORTH, SOUTH, EAST, WEST}
+
+    # IMPORTANT: Don't change the order.
+    direction_order = [NORTH, EAST, SOUTH, WEST]
+
+
+class Results:
+    OK = 'ok'
+    FAILED = 'failed'
+    OBSTACLE = 'obstacle'
+
+    ALL = {OK, FAILED, OBSTACLE}
 
 
 class RobotState(Base):
@@ -37,6 +49,15 @@ class CommandHistory(Base):
 
     command = Column(String, nullable=False)
     executed = Column(Boolean, default=False)
+    result = Column(String, nullable=True)
 
     timestamp = Column(DateTime, default=func.now(), nullable=False)
     robot_states = relationship("RobotState", back_populates="command", lazy="dynamic")
+
+    @staticmethod
+    def is_valid_result(result):
+        return result in Results.ALL
+
+    @staticmethod
+    def is_valid_command(command):
+        return all(c in 'FBLR' for c in command)
