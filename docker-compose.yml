@@ -9,9 +9,8 @@ services:
     volumes:
       - .:/app/
       - ./env:/app/env
-    environment:
-      UVICORN_WORKERS: 4
-      DB_URL: postgresql://moon_explorer_user:Password!@postgres:5432/moon_explorer_db
+    env_file:
+      - env/.env
     depends_on:
       - postgres
     networks:
@@ -28,10 +27,8 @@ services:
       - 5432:5432
     expose:
       - "5432"
-    environment:
-      POSTGRES_USER: moon_explorer_user
-      POSTGRES_PASSWORD: Password!
-      POSTGRES_DB: moon_explorer_db
+    env_file:
+      - env/.env.db
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U moon_explorer_user -d moon_explorer_db -h localhost -p 5432" ]
       interval: 10s

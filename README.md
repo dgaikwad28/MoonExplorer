@@ -23,8 +23,11 @@ cd MoonExplorer
 - Copy the example environment file:
   ```bash
   cp env/example.env .env
+  cp env/example.env.db .env.db
   ```
-- Edit `.env` to set your environment variables (e.g., database URL, secret keys, debug mode, etc.)
+- Edit `.env` to set your application environment variables (e.g., database URL, secret keys, debug mode, etc.).
+- Edit `.env.db` to set your database-specific environment variables for docker specifically (e.g., POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB).
+- Both files are used by Docker Compose to configure the app and database services.
 
 ---
 
@@ -107,4 +110,3 @@ cd MoonExplorer
 - `tests/` - Unit and API tests
 
 ---
-

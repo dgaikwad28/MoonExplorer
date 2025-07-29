@@ -125,6 +125,7 @@ celerybeat.pid
 # Environments
 env/*
 !env/example.env
+!env/example.env.db
 
 
 # Spyder project settings
