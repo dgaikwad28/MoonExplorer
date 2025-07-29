@@ -23,11 +23,11 @@ def get_or_create_robot_state(db: Session) -> RobotState:
             db.commit()
             db.refresh(state)
         return state
-    except IntegrityError:
-        api_logger.exception('Integrity error when adding new robot state')
+    except IntegrityError as exc:
+        api_logger.exception('Integrity error when adding new robot state', exc_info=exc)
         raise InvalidData()
     except Exception as exc:
-        api_logger.exception(f'Unexpected error: {exc}')
+        api_logger.exception(f'Unexpected error: {exc}', exc_info=exc)
         raise InvalidData()
 
 

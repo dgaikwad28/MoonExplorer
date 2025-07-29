@@ -26,15 +26,8 @@ async def invalid_data(_: Request, exc: InvalidData):
 
 
 async def incorrect_configuration(_: Request, exc: IncorrectConfiguration):
+    api_logger.info(f'Invalid command', exc_info=exc)
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={"type": "RequestValidationError", "detail": "Incorrect request body"}
-    )
-
-
-async def handler_uncaught_exception(_: Request, exc: Exception):
-    api_logger.critical("Internal Error", exc_info=exc)
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"type": "Unknown", "detail": "Internal Error"}
     )

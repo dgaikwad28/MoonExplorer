@@ -31,7 +31,6 @@ def init_app() -> FastAPI:
     # exceptions
     _app.add_exception_handler(InvalidData, invalid_data)
     _app.add_exception_handler(RequestValidationError, incorrect_configuration)
-    _app.add_exception_handler(Exception, handler_uncaught_exception)
 
     # middlewares
     _app.add_middleware(SessionMiddleware, https_only=SETTINGS.https_only, secret_key=SETTINGS.secret_key,
@@ -45,4 +44,3 @@ def init_app() -> FastAPI:
 
 
 app = init_app()
-
