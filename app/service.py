@@ -12,7 +12,7 @@ api_logger = getLogger('api')
 
 def get_or_create_robot_state(db: Session) -> RobotState:
     try:
-        state = db.query(RobotState).first()
+        state = db.query(RobotState).order_by(RobotState.timestamp.desc(), RobotState.id.desc()).first()
         if not state:
             api_logger.debug('No robot state found, creating a new one with initial settings.')
             state = RobotState(x=SETTINGS.start_x, y=SETTINGS.start_y, direction=SETTINGS.start_direction)
