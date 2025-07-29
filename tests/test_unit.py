@@ -1,7 +1,7 @@
 import pytest
 from app.models.db_models import RobotState, Directions, CommandHistory
 from app.service import get_or_create_robot_state, check_obstacle, move_robot
-from app.config.exception_handlers import InvalidData, IncorrectConfiguration
+from app.config.exception_handlers import InvalidData
 
 
 class TestRobotStateDB:
