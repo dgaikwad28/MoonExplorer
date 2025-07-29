@@ -1,9 +1,10 @@
+alembic
 fastapi
-uvicorn[standard]
 gunicorn
-pydantic
-pydantic-settings
-sqlalchemy
 itsdangerous
 psycopg2-binary
-alembic
+pydantic
+pydantic-settings
+pytest
+sqlalchemy
+uvicorn[standard]
